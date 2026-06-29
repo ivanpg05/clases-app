@@ -200,6 +200,12 @@ export default function ProfePerfil() {
       <div className="card" style={{ marginTop: 16 }}>
         <h3 style={{ marginTop: 0 }}>Certificado de delitos sexuales</h3>
         <p className="muted" style={{ fontSize: 13 }}>Obligatorio. Privado. Solo lo ve el equipo para verificarte.</p>
+       <p className="muted" style={{ fontSize: 13 }}>
+          ¿No sabes cómo conseguirlo? Lo solicitas gratis en{" "}
+          <a href="https://sede.mjusticia.gob.es/es/tramites/certificado-delitos" target="_blank" rel="noopener noreferrer">
+            la Sede del Ministerio de Justicia
+          </a>.
+        </p> 
         <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={e => setCert(e.target.files?.[0] ?? null)} />
       </div>
 

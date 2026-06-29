@@ -16,12 +16,31 @@ export default function Registro() {
   async function submit() {
     setErr("");
     if (!nombre || !apellidos || !email || !pass) { setErr("Rellena todos los campos"); return; }
+    if (pass.length < 6) { setErr("La contraseña debe tener al menos 6 caracteres"); return; }
     setLoad(true);
-    const { error } = await supabase.auth.signUp({
+
+    const { data, error } = await supabase.auth.signUp({
       email, password: pass,
       options: { data: { role, nombre, apellidos } },
     });
-    if (error) { setErr(error.message); setLoad(false); return; }
+
+    if (error) {
+      if (error.message.toLowerCase().includes("already") || error.message.toLowerCase().includes("registered")) {
+        setErr("Ese correo ya tiene una cuenta. Entra con él o usa otro distinto.");
+      } else {
+        setErr(error.message);
+      }
+      setLoad(false);
+      return;
+    }
+
+    // Supabase devuelve un usuario "vacío" (sin identidades) si el email ya existía
+    if (data.user && data.user.identities && data.user.identities.length === 0) {
+      setErr("Ese correo ya tiene una cuenta. Entra con él o usa otro distinto.");
+      setLoad(false);
+      return;
+    }
+
     router.push(role === "profe" ? "/profe" : "/familia");
   }
 

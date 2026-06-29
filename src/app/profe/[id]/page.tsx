@@ -20,7 +20,12 @@ type Imparte = { nivel_id: string; asignatura_id: number; idioma_nivel: string |
 function iniciales(n?: string, a?: string) {
   return `${(n?.[0] ?? "").toUpperCase()}${(a?.[0] ?? "").toUpperCase()}`;
 }
-
+function modalidadLabel(m: string) {
+  if (m === "ambas") return "Online y presencial";
+  if (m === "online") return "Online";
+  if (m === "presencial") return "Presencial";
+  return m;
+}
 export default function FichaProfe() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
@@ -99,7 +104,7 @@ export default function FichaProfe() {
         <p style={{ marginTop: 16 }}>{perfil.bio}</p>
 
         <div className="muted" style={{ fontSize: 14 }}>
-          {perfil.modalidad}{perfil.zona ? ` · ${perfil.zona}` : ""}{perfil.anios_exp != null ? ` · ${perfil.anios_exp} años de experiencia` : ""}
+          {modalidadLabel(perfil.modalidad)}{perfil.zona ? ` · ${perfil.zona}` : ""}{perfil.anios_exp != null ? ` · ${perfil.anios_exp} años de experiencia` : ""}
         </div>
 
         <h3 style={{ marginTop: 20 }}>Asignaturas</h3>

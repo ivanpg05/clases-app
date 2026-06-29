@@ -18,7 +18,12 @@ type Profe = {
 function iniciales(n?: string, a?: string) {
   return `${(n?.[0] ?? "").toUpperCase()}${(a?.[0] ?? "").toUpperCase()}`;
 }
-
+function modalidadLabel(m: string) {
+  if (m === "ambas") return "Online y presencial";
+  if (m === "online") return "Online";
+  if (m === "presencial") return "Presencial";
+  return m;
+}
 export default function Buscar() {
   const [niveles, setNiveles] = useState<Nivel[]>([]);
   const [asigs, setAsigs] = useState<Asig[]>([]);
@@ -125,7 +130,7 @@ export default function Buscar() {
                     <span className="badge badge-verde"><i className="ti ti-shield-check" /> Verificado</span>
                   </div>
                   <div className="muted" style={{ fontSize: 14, marginTop: 2 }}>
-                    {p.modalidad}{p.zona ? ` · ${p.zona}` : ""}{p.anios_exp ? ` · ${p.anios_exp} años exp.` : ""}
+                    {modalidadLabel(p.modalidad)}{p.zona ? ` · ${p.zona}` : ""}{p.anios_exp ? ` · ${p.anios_exp} años exp.` : ""}
                   </div>
                   <p style={{ fontSize: 14, color: "var(--ink)", margin: "8px 0 0" }}>
                     {p.bio.slice(0, 100)}{p.bio.length > 100 ? "…" : ""}

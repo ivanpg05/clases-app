@@ -105,3 +105,13 @@ p { margin: 0 0 12px; }
 .muted { color: var(--muted); }
 .text-error { color: var(--rojo); }
 .text-success { color: var(--verde-ink); }
+/* NAV responsive */
+.nav-desktop { display: none; }
+.nav-mobile { display: block; }
+.nav-burger { display: inline-flex; }
+
+@media (min-width: 720px) {
+  .nav-desktop { display: flex; }
+  .nav-mobile { display: none; }
+  .nav-burger { display: none; }
+}
