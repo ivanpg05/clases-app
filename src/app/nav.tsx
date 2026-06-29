@@ -30,7 +30,6 @@ export default function Nav() {
     router.push("/");
   }
 
-  // enlaces según estado
   let links: { href: string; label: string }[] = [];
   if (estado === "fuera") {
     links = [{ href: "/buscar", label: "Buscar profes" }, { href: "/tablon", label: "Tablón" }];
@@ -39,12 +38,15 @@ export default function Nav() {
       { href: "/buscar", label: "Buscar profes" },
       { href: "/familia", label: "Mis anuncios" },
       { href: "/tablon", label: "Tablón" },
+      { href: "/recursos", label: "Recursos" },
       { href: "/mensajes", label: "Mensajes" },
     ];
   } else if (estado === "profe") {
     links = [
       { href: "/tablon", label: "Tablón" },
       { href: "/profe", label: "Mi perfil" },
+      { href: "/profe/documentos", label: "Mis documentos" },
+      { href: "/recursos", label: "Recursos" },
       { href: "/mensajes", label: "Mensajes" },
     ];
   }
@@ -57,13 +59,11 @@ export default function Nav() {
           <span style={{ fontFamily: "var(--font-display)", fontWeight: 700, fontSize: 18, color: "var(--tinta)" }}>Academy</span>
         </a>
 
-        {/* botón hamburguesa (solo móvil) */}
         <button onClick={() => setOpen(o => !o)} aria-label="Menú" className="nav-burger"
           style={{ marginLeft: "auto", background: "none", border: "1px solid var(--border)", borderRadius: 8, padding: "8px 10px", cursor: "pointer" }}>
           <i className={`ti ti-${open ? "x" : "menu-2"}`} style={{ fontSize: 20, color: "var(--tinta)" }} />
         </button>
 
-        {/* enlaces escritorio */}
         <div className="nav-desktop" style={{ marginLeft: "auto", alignItems: "center", gap: 16 }}>
           {links.map(l => <a key={l.href} href={l.href} style={{ color: "var(--ink)", textDecoration: "none" }}>{l.label}</a>)}
           {estado === "fuera" ? (
@@ -74,7 +74,6 @@ export default function Nav() {
         </div>
       </div>
 
-      {/* panel desplegable móvil */}
       {open && (
         <div className="nav-mobile" style={{ borderTop: "1px solid var(--border)", padding: "8px 20px 16px" }}>
           {links.map(l => (
