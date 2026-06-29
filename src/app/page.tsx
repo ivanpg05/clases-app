@@ -1,77 +1,28 @@
-/*import Image from "next/image";
+export default function Home() {
+  return (
+    <div className="container" style={{ textAlign: "center", paddingTop: 64 }}>
+      <h1 style={{ fontSize: 40 }}>Encuentra al profe ideal</h1>
+      <p className="muted" style={{ fontSize: 18, maxWidth: 480, margin: "0 auto 28px" }}>
+        Profes verificados de confianza. Tú eliges. Tú contactas.
+      </p>
+      <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+        <a href="/buscar"><button className="btn btn-primary">Buscar profe</button></a>
+        <a href="/registro"><button className="btn btn-secondary">Crear cuenta</button></a>
+      </div>
 
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 16, marginTop: 56, textAlign: "left" }}>
+        <div className="card">
+          <h3>Profes verificados</h3>
+          <p className="muted" style={{ margin: 0, fontSize: 14 }}>Cada profe pasa un control antes de aparecer.</p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="card">
+          <h3>Tú decides</h3>
+          <p className="muted" style={{ margin: 0, fontSize: 14 }}>Filtra por asignatura, nivel y zona, y elige.</p>
         </div>
-      </main>
-    </div>
-  );
-}*/
-export default function Home() {
-  return (
-    <div style={{ maxWidth: 560, margin: "40px auto", padding: 16, fontFamily: "sans-serif" }}>
-      <h1>Clases particulares</h1>
-      <p>Encuentra profe o publica lo que necesitas.</p>
-      <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-        <a href="/buscar"><button style={{ padding: 10 }}>Buscar profe</button></a>
-        <a href="/registro"><button style={{ padding: 10 }}>Crear cuenta</button></a>
-        <a href="/login"><button style={{ padding: 10 }}>Entrar</button></a>
+        <div className="card">
+          <h3>Contacto directo</h3>
+          <p className="muted" style={{ margin: 0, fontSize: 14 }}>Habla con el profe desde la propia plataforma.</p>
+        </div>
       </div>
     </div>
   );

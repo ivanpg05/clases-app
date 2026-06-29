@@ -15,52 +15,61 @@ export default function Registro() {
 
   async function submit() {
     setErr("");
-    if (!nombre || !apellidos || !email || !pass) {
-      setErr("Rellena todos los campos");
-      return;
-    }
+    if (!nombre || !apellidos || !email || !pass) { setErr("Rellena todos los campos"); return; }
     setLoad(true);
-
     const { error } = await supabase.auth.signUp({
-      email,
-      password: pass,
+      email, password: pass,
       options: { data: { role, nombre, apellidos } },
     });
     if (error) { setErr(error.message); setLoad(false); return; }
+    router.push(role === "profe" ? "/profe" : "/familia");
+  }
 
-    router.push(role === "profe" ? "/profe" : "/familia"); }
+  const tabBase: React.CSSProperties = {
+    flex: 1, padding: "12px", borderRadius: "var(--radius-sm)", cursor: "pointer",
+    fontFamily: "var(--font-body)", fontSize: 15, fontWeight: 500, border: "1px solid var(--border)",
+  };
 
   return (
-    <div style={{ maxWidth: 400, margin: "40px auto", padding: 16, fontFamily: "sans-serif" }}>
-      <h1>Crear cuenta</h1>
+    <div className="container-narrow" style={{ paddingTop: 48 }}>
+      <div className="card" style={{ padding: 28 }}>
+        <h1 style={{ textAlign: "center" }}>Crear cuenta</h1>
+        <p className="muted" style={{ textAlign: "center", marginTop: -4 }}>Únete a PGAcademy.</p>
 
-      <div style={{ display: "flex", gap: 8, margin: "12px 0" }}>
-        <button onClick={() => setRole("familia")}
-          style={{ flex: 1, padding: 8, background: role === "familia" ? "#222" : "#eee", color: role === "familia" ? "#fff" : "#000" }}>
-          Soy familia
+        <div style={{ display: "flex", gap: 10, margin: "16px 0 8px" }}>
+          <button onClick={() => setRole("familia")} style={{
+            ...tabBase,
+            background: role === "familia" ? "var(--tinta)" : "var(--surface)",
+            color: role === "familia" ? "#fff" : "var(--ink)",
+            borderColor: role === "familia" ? "var(--tinta)" : "var(--border)",
+          }}>Soy familia</button>
+          <button onClick={() => setRole("profe")} style={{
+            ...tabBase,
+            background: role === "profe" ? "var(--tinta)" : "var(--surface)",
+            color: role === "profe" ? "#fff" : "var(--ink)",
+            borderColor: role === "profe" ? "var(--tinta)" : "var(--border)",
+          }}>Soy profe</button>
+        </div>
+
+        <label className="label">Nombre</label>
+        <input className="input" placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} />
+        <label className="label">Apellidos</label>
+        <input className="input" placeholder="Apellidos" value={apellidos} onChange={e => setApellidos(e.target.value)} />
+        <label className="label">Email</label>
+        <input className="input" placeholder="tu@email.com" value={email} onChange={e => setEmail(e.target.value)} />
+        <label className="label">Contraseña</label>
+        <input className="input" type="password" placeholder="••••••••" value={pass} onChange={e => setPass(e.target.value)} />
+
+        {err && <p className="text-error" style={{ marginTop: 10 }}>{err}</p>}
+
+        <button onClick={submit} disabled={load} className="btn btn-primary btn-block" style={{ marginTop: 18 }}>
+          {load ? "Creando..." : "Crear cuenta"}
         </button>
-        <button onClick={() => setRole("profe")}
-          style={{ flex: 1, padding: 8, background: role === "profe" ? "#222" : "#eee", color: role === "profe" ? "#fff" : "#000" }}>
-          Soy profe
-        </button>
+
+        <p className="muted" style={{ textAlign: "center", marginTop: 16, marginBottom: 0, fontSize: 14 }}>
+          ¿Ya tienes cuenta? <a href="/login">Entrar</a>
+        </p>
       </div>
-
-      <input placeholder="Nombre" value={nombre} onChange={e => setNombre(e.target.value)} style={inp} />
-      <input placeholder="Apellidos" value={apellidos} onChange={e => setApellidos(e.target.value)} style={inp} />
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} style={inp} />
-      <input placeholder="Contraseña" type="password" value={pass} onChange={e => setPass(e.target.value)} style={inp} />
-
-      {err && <p style={{ color: "red" }}>{err}</p>}
-
-      <button onClick={submit} disabled={load} style={{ width: "100%", padding: 10, marginTop: 8 }}>
-        {load ? "Creando..." : "Crear cuenta"}
-      </button>
-
-      <p style={{ marginTop: 12 }}>
-        ¿Ya tienes cuenta? <a href="/login">Entrar</a>
-      </p>
     </div>
   );
 }
-
-const inp: React.CSSProperties = { width: "100%", padding: 8, margin: "6px 0", boxSizing: "border-box" };

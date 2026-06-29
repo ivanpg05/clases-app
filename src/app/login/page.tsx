@@ -12,30 +12,39 @@ export default function Login() {
 
   async function submit() {
     setErr(""); setLoad(true);
-
     const { data, error } = await supabase.auth.signInWithPassword({ email, password: pass });
     if (error) { setErr(error.message); setLoad(false); return; }
-
     const { data: prof } = await supabase
       .from("profiles").select("role").eq("id", data.user.id).single();
-
     router.push(prof?.role === "profe" ? "/profe" : "/familia");
   }
 
   return (
-    <div style={{ maxWidth: 400, margin: "40px auto", padding: 16, fontFamily: "sans-serif" }}>
-      <h1>Entrar</h1>
-      <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} style={inp} />
-      <input placeholder="Contraseña" type="password" value={pass} onChange={e => setPass(e.target.value)} style={inp} />
-      {err && <p style={{ color: "red" }}>{err}</p>}
-      <button onClick={submit} disabled={load} style={{ width: "100%", padding: 10, marginTop: 8 }}>
-        {load ? "Entrando..." : "Entrar"}
-      </button>
-      <p style={{ marginTop: 12 }}>
-        ¿No tienes cuenta? <a href="/registro">Crear cuenta</a>
-      </p>
+    <div className="container-narrow" style={{ paddingTop: 56 }}>
+      <div className="card" style={{ padding: 28 }}>
+        <h1 style={{ textAlign: "center" }}>Entrar</h1>
+        <p className="muted" style={{ textAlign: "center", marginTop: -4 }}>Bienvenido de nuevo a PGAcademy.</p>
+
+        <label className="label">Email</label>
+        <input className="input" placeholder="tu@email.com" value={email}
+          onChange={e => setEmail(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && submit()} />
+
+        <label className="label">Contraseña</label>
+        <input className="input" type="password" placeholder="••••••••" value={pass}
+          onChange={e => setPass(e.target.value)}
+          onKeyDown={e => e.key === "Enter" && submit()} />
+
+        {err && <p className="text-error" style={{ marginTop: 10 }}>{err}</p>}
+
+        <button onClick={submit} disabled={load} className="btn btn-primary btn-block" style={{ marginTop: 18 }}>
+          {load ? "Entrando..." : "Entrar"}
+        </button>
+
+        <p className="muted" style={{ textAlign: "center", marginTop: 16, marginBottom: 0, fontSize: 14 }}>
+          ¿No tienes cuenta? <a href="/registro">Crear cuenta</a>
+        </p>
+      </div>
     </div>
   );
 }
-
-const inp: React.CSSProperties = { width: "100%", padding: 8, margin: "6px 0", boxSizing: "border-box" };

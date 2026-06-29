@@ -15,6 +15,10 @@ type Profe = {
   profiles: { nombre: string; apellidos: string; foto_url: string | null } | null;
 };
 
+function iniciales(n?: string, a?: string) {
+  return `${(n?.[0] ?? "").toUpperCase()}${(a?.[0] ?? "").toUpperCase()}`;
+}
+
 export default function Buscar() {
   const [niveles, setNiveles] = useState<Nivel[]>([]);
   const [asigs, setAsigs] = useState<Asig[]>([]);
@@ -41,8 +45,6 @@ export default function Buscar() {
 
   async function buscar() {
     setLoad(true);
-
-    // si filtran por nivel/asignatura, primero saco los profile_id que imparten eso
     let idsFiltrados: string[] | null = null;
     if (fNivel || fAsig) {
       let q = supabase.from("profe_imparte").select("profile_id");
@@ -52,69 +54,86 @@ export default function Buscar() {
       idsFiltrados = [...new Set((data ?? []).map(r => r.profile_id))];
       if (idsFiltrados.length === 0) { setProfes([]); setLoad(false); return; }
     }
-
     let q = supabase
       .from("profe_perfil")
       .select("profile_id, bio, modalidad, zona, precio_online, precio_cerca, anios_exp, profiles(nombre, apellidos, foto_url)")
       .eq("visible", true);
-
     if (idsFiltrados) q = q.in("profile_id", idsFiltrados);
     if (fModalidad) {
-      // online → modalidad online o ambas; presencial → presencial o ambas
       if (fModalidad === "online") q = q.in("modalidad", ["online", "ambas"]);
       else q = q.in("modalidad", ["presencial", "ambas"]);
     }
     if (fZona) q = q.ilike("zona", `%${fZona}%`);
-
     const { data } = await q;
     setProfes((data ?? []) as unknown as Profe[]);
     setLoad(false);
   }
 
   return (
-    <div style={{ maxWidth: 720, margin: "32px auto", padding: 16, fontFamily: "sans-serif" }}>
+    <div className="container">
       <h1>Buscar profe</h1>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
-        <select value={fNivel} onChange={e => { setFNivel(e.target.value); setFAsig(""); }} style={sel}>
-          <option value="">Todos los niveles</option>
-          {niveles.map(n => <option key={n.id} value={n.id}>{n.nombre}</option>)}
-        </select>
-        <select value={fAsig} onChange={e => setFAsig(e.target.value)} style={sel} disabled={!fNivel}>
-          <option value="">Todas las asignaturas</option>
-          {asigsDeNivel.map(a => <option key={a.id} value={a.id}>{a.nombre}</option>)}
-        </select>
-        <select value={fModalidad} onChange={e => setFModalidad(e.target.value)} style={sel}>
-          <option value="">Cualquier modalidad</option>
-          <option value="online">Online</option>
-          <option value="presencial">Presencial</option>
-        </select>
-        <input placeholder="Zona..." value={fZona} onChange={e => setFZona(e.target.value)} style={sel} />
-        <button onClick={buscar} style={{ padding: "8px 16px" }}>Buscar</button>
+      <div className="card" style={{ marginBottom: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 10, alignItems: "end" }}>
+          <div>
+            <label className="label" style={{ marginTop: 0 }}>Nivel</label>
+            <select className="select" value={fNivel} onChange={e => { setFNivel(e.target.value); setFAsig(""); }}>
+              <option value="">Todos</option>
+              {niveles.map(n => <option key={n.id} value={n.id}>{n.nombre}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="label" style={{ marginTop: 0 }}>Asignatura</label>
+            <select className="select" value={fAsig} onChange={e => setFAsig(e.target.value)} disabled={!fNivel}>
+              <option value="">Todas</option>
+              {asigsDeNivel.map(a => <option key={a.id} value={a.id}>{a.nombre}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="label" style={{ marginTop: 0 }}>Modalidad</label>
+            <select className="select" value={fModalidad} onChange={e => setFModalidad(e.target.value)}>
+              <option value="">Cualquiera</option>
+              <option value="online">Online</option>
+              <option value="presencial">Presencial</option>
+            </select>
+          </div>
+          <div>
+            <label className="label" style={{ marginTop: 0 }}>Zona</label>
+            <input className="input" placeholder="Zona..." value={fZona} onChange={e => setFZona(e.target.value)} />
+          </div>
+        </div>
+        <button onClick={buscar} className="btn btn-primary" style={{ marginTop: 12 }}>Buscar</button>
       </div>
 
-      {load ? <p>Cargando...</p> : profes.length === 0 ? (
-        <p style={{ color: "#888" }}>No hay profes que encajen con esos filtros.</p>
+      {load ? <p className="muted">Cargando...</p> : profes.length === 0 ? (
+        <div className="card" style={{ textAlign: "center", padding: 40 }}>
+          <p className="muted" style={{ margin: 0 }}>No hay profes que encajen con esos filtros.</p>
+        </div>
       ) : (
-        <div style={{ display: "grid", gap: 12 }}>
+        <div style={{ display: "grid", gap: 14 }}>
           {profes.map(p => (
-            <a key={p.profile_id} href={`/profe/${p.profile_id}`}
-              style={{ textDecoration: "none", color: "inherit" }}>
-              <div style={{ border: "1px solid #ddd", borderRadius: 8, padding: 14, display: "flex", gap: 12 }}>
-                <div style={{ width: 48, height: 48, borderRadius: "50%", background: "#ddd", flex: "none" }} />
-                <div>
-                  <strong>{p.profiles?.nombre} {p.profiles?.apellidos}</strong>
-                  <div style={{ fontSize: 13, color: "#666" }}>
-                    {p.modalidad}{p.zona ? ` · ${p.zona}` : ""}
-                    {p.anios_exp ? ` · ${p.anios_exp} años exp.` : ""}
+            <a key={p.profile_id} href={`/profe/${p.profile_id}`} className="card card-link">
+              <div style={{ display: "flex", gap: 14 }}>
+                <div className="avatar" style={{ width: 52, height: 52, fontSize: 16 }}>
+                  {iniciales(p.profiles?.nombre, p.profiles?.apellidos)}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontFamily: "var(--font-display)", fontWeight: 600, fontSize: 17, color: "var(--ink)" }}>
+                      {p.profiles?.nombre} {p.profiles?.apellidos}
+                    </span>
+                    <span className="badge badge-verde"><i className="ti ti-shield-check" /> Verificado</span>
                   </div>
-                  <div style={{ fontSize: 13, marginTop: 4 }}>
-                    {p.precio_online ? `Online ${p.precio_online}€/h` : ""}
-                    {p.precio_cerca ? ` · Presencial desde ${p.precio_cerca}€/h` : ""}
+                  <div className="muted" style={{ fontSize: 14, marginTop: 2 }}>
+                    {p.modalidad}{p.zona ? ` · ${p.zona}` : ""}{p.anios_exp ? ` · ${p.anios_exp} años exp.` : ""}
                   </div>
-                  <p style={{ fontSize: 13, color: "#555", margin: "6px 0 0" }}>
-                    {p.bio.slice(0, 90)}{p.bio.length > 90 ? "…" : ""}
+                  <p style={{ fontSize: 14, color: "var(--ink)", margin: "8px 0 0" }}>
+                    {p.bio.slice(0, 100)}{p.bio.length > 100 ? "…" : ""}
                   </p>
+                  <div style={{ marginTop: 8, fontSize: 14, fontWeight: 500, color: "var(--ink)" }}>
+                    {p.precio_online ? `Online ${p.precio_online}€/h` : ""}
+                    {p.precio_cerca ? `${p.precio_online ? " · " : ""}Presencial desde ${p.precio_cerca}€/h` : ""}
+                  </div>
                 </div>
               </div>
             </a>
@@ -124,5 +143,3 @@ export default function Buscar() {
     </div>
   );
 }
-
-const sel: React.CSSProperties = { padding: 8 };
