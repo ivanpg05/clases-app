@@ -11,6 +11,25 @@ type Doc = {
   profiles: { nombre: string; apellidos: string } | null;
 };
 
+function pathDesdeUrl(url: string): string | null {
+  const marca = "/documentos/";
+  const i = url.indexOf(marca);
+  if (i === -1) return null;
+  return url.substring(i + marca.length);
+}
+
+async function descargar(url: string, titulo: string, tipo: string) {
+  const path = pathDesdeUrl(url);
+  if (!path) { window.open(url, "_blank"); return; }
+  const { data, error } = await supabase.storage
+    .from("documentos")
+    .createSignedUrl(path, 60, { download: `${titulo}.${tipo}` });
+  if (error || !data) { alert("No se pudo descargar"); return; }
+  const a = document.createElement("a");
+  a.href = data.signedUrl;
+  a.click();
+}
+
 export default function Recursos() {
   const router = useRouter();
   const [niveles, setNiveles] = useState<Nivel[]>([]);
@@ -94,9 +113,9 @@ export default function Recursos() {
                 </div>
                 {d.descripcion && <p style={{ fontSize: 14, margin: "6px 0 0" }}>{d.descripcion}</p>}
               </div>
-              <a href={d.archivo_url} download target="_blank" rel="noopener noreferrer">
-                <button className="btn btn-secondary" style={{ padding: "8px 14px" }}><i className="ti ti-download" /> Descargar</button>
-              </a>
+              <button onClick={() => descargar(d.archivo_url, d.titulo, d.tipo)} className="btn btn-secondary" style={{ padding: "8px 14px" }}>
+                <i className="ti ti-download" /> Descargar
+              </button>
             </div>
           ))}
         </div>
