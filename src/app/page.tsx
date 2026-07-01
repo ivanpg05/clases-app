@@ -19,11 +19,22 @@ export default function Home() {
           <h3>Tú decides</h3>
           <p className="muted" style={{ margin: 0, fontSize: 14 }}>Filtra por asignatura, nivel y zona, y elige.</p>
         </div>
-        <div className="card">
+<div className="card">
           <h3>Contacto directo</h3>
           <p className="muted" style={{ margin: 0, fontSize: 14 }}>Habla con el profe desde la propia plataforma.</p>
         </div>
       </div>
+
+      <div className="card" style={{ marginTop: 40, display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: 20, background: "var(--tinta)", border: "none" }}>
+        <div style={{ flex: 1, minWidth: 260 }}>
+          <span className="badge badge-verde" style={{ marginBottom: 10 }}><i className="ti ti-shield-check" /> También en PGAcademy</span>
+          <h2 style={{ color: "#fff", margin: "0 0 8px" }}>¿Necesitas quien cuidemos de los niños por las tardes?</h2>
+          <p style={{ color: "rgba(255,255,255,.8)", margin: 0, fontSize: 15 }}>
+            Canguros verificados en Madrid y Palencia, cerca de tu barrio. Con la misma verificación que nuestros profes.
+          </p>
+        </div>
+        <a href="/canguro"><button className="btn" style={{ background: "#fff", color: "var(--tinta)" }}>Descubrir canguros</button></a>
+      </div>
     </div>
   );
-}
+}        
