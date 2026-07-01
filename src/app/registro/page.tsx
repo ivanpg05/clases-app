@@ -12,11 +12,13 @@ export default function Registro() {
   const [pass, setPass] = useState("");
   const [err, setErr] = useState("");
   const [load, setLoad] = useState(false);
+  const [acepto, setAcepto] = useState(false);
 
   async function submit() {
     setErr("");
     if (!nombre || !apellidos || !email || !pass) { setErr("Rellena todos los campos"); return; }
     if (pass.length < 6) { setErr("La contraseña debe tener al menos 6 caracteres"); return; }
+    if (!acepto) { setErr("Debes aceptar los términos y condiciones"); return; }
     setLoad(true);
 
     const { data, error } = await supabase.auth.signUp({
@@ -78,7 +80,10 @@ export default function Registro() {
         <input className="input" placeholder="tu@email.com" value={email} onChange={e => setEmail(e.target.value)} />
         <label className="label">Contraseña</label>
         <input className="input" type="password" placeholder="••••••••" value={pass} onChange={e => setPass(e.target.value)} />
-
+<label style={{ display: "flex", gap: 8, alignItems: "flex-start", marginTop: 14, fontSize: 13 }} className="muted">
+          <input type="checkbox" checked={acepto} onChange={e => setAcepto(e.target.checked)} style={{ marginTop: 3 }} />
+          <span>He leído y acepto la <a href="/legal/privacidad" target="_blank">Política de Privacidad</a> y las <a href="/legal/condiciones" target="_blank">Condiciones de Uso</a>.</span>
+        </label>
         {err && <p className="text-error" style={{ marginTop: 10 }}>{err}</p>}
 
         <button onClick={submit} disabled={load} className="btn btn-primary btn-block" style={{ marginTop: 18 }}>
